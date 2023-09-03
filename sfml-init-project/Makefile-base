@@ -1,0 +1,55 @@
+CXX 		:= g++
+CXXINCL 	:= ./incl
+CXXLIB 		:= -lsfml-system -lsfml-graphics -lsfml-audio -lsfml-window
+SRC_PATH 	:= ./src
+OBJ_PATH 	:= ./obj
+CXXARGS_DEB := -c -g -O0 -Wall -Werror
+CXXARGS_REL := -c -O3
+CXXARGS 	:= -c
+
+SRCS 		:= $(shell find ./src -name '*.cpp' -or -name '*.c')
+OBJS 		:= $(patsubst $(SRC_PATH)/%.cpp,$(OBJ_PATH)/%.cpp.o,$(filter %.cpp,$(SRCS)))\
+			   $(patsubst $(SRC_PATH)/%.c,$(OBJ_PATH)/%.c.o,$(filter %.c,$(SRCS)))
+
+no_srcs 	:= $(words $(SRCS))
+so_far 		:= 0
+OBJ_PATHS_  := $(dir $(OBJS))
+
+.PHONY: debug clean release
+
+
+debug: CXXARGS = CXXARGS_DEB
+debug: main
+
+release: CXXARGS = CXXARGS_REL
+release: main
+
+
+main: $(OBJS)
+	$(eval so_far += $?)
+	@echo "preparing $@"
+	@$(CXX) $^ -o $@ $(CXXLIB)
+	@echo "serving $@!"
+
+$(OBJ_PATH)/%.cpp.o: $(SRC_PATH)/%.cpp | $(OBJ_PATH)
+	$(eval so_far += 1)
+	@mkdir -p $(@D)
+	@echo "cooking $@ ($(words so_far) / $(no_srcs)) ..."
+	@$(CXX) $^ -o $@ $(CXXINCL) $(CXXARGS_DEB)
+
+$(OBJ_PATH)/%.c.o: $(SRC_PATH)/%.c | $(OBJ_PATH)
+	$(eval so_far += 1)
+	@mkdir -p $(@D)
+	@echo "cooking $@ ($(words so_far) / $(no_srcs)) ..."
+	@$(CXX) $^ -o $@ $(CXXINCL) $(CXXARGS_DEB)
+
+$(OBJ_PATH): 
+	@echo "mixing $@"
+	@mkdir $@
+
+
+clean: $(OBJ_PATH)
+	@echo "washing the dishes"
+	@rm -r $^
+
+

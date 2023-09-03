@@ -1,0 +1,21 @@
+#!/bin/bash
+
+WORKING_DIR=$(pwd)
+SCRIPT_DIR=$(dirname -- $(readlink -f "$0"))
+
+mkdir $WORKING_DIR/src
+mkdir $WORKING_DIR/incl
+cp $SCRIPT_DIR/Makefile-base Makefile
+
+
+
+if [[ "$1" == "C" || "$1" == "c" ]]; then 
+		sed -i 's/CXX[[:space:]]*:=.*/CXX 		:= gcc/' $(pwd)/Makefile
+		touch $WORKING_DIR/src/main.c
+		vim $WORKING_DIR/src/main.c
+else
+		touch $WORKING_DIR/src/main.cpp
+		vim $WORKING_DIR/src/main.cpp
+fi
+
+echo Done! Happy coding
