@@ -34,13 +34,13 @@ $(OBJ_PATH)/%.cpp.o: $(SRC_PATH)/%.cpp | $(OBJ_PATH)
 	$(eval so_far += 1)
 	@mkdir -p $(@D)
 	@echo "cooking $@ ($(words so_far) / $(no_srcs)) ..."
-	@$(CXX) $^ -o $@ $(CXXINCL) $(CXXARGS_DEB)
+	@$(CXX) $^ -o $@ -I$(CXXINCL) $(CXXARGS_DEB)
 
 $(OBJ_PATH)/%.c.o: $(SRC_PATH)/%.c | $(OBJ_PATH)
 	$(eval so_far += 1)
 	@mkdir -p $(@D)
 	@echo "cooking $@ ($(words so_far) / $(no_srcs)) ..."
-	@$(CXX) $^ -o $@ $(CXXINCL) $(CXXARGS_DEB)
+	@$(CXX) $^ -o $@ -I$(CXXINCL) $(CXXARGS_DEB)
 
 $(OBJ_PATH): 
 	@echo "mixing $@"
